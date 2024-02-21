@@ -8,7 +8,7 @@ import os
 
 class TsLabel():
     def __init__(self, filename) -> None:
-        self.filenmae = filename
+        self.filename = filename
         self.df = pd.read_csv('data/'+filename, parse_dates=True, index_col=0)
         self.df['label'] = 0
 
@@ -85,11 +85,9 @@ class TsLabel():
         plt.show()
 
     def savecsv(self):
-        self.df.to_csv('data/'+self.outputname)
+        self.df.to_csv('data/' + self.filename)
 
 
-    # 调用绘图函数
-    plot_data()
 if __name__ == '__main__':
     files = os.listdir('data/')
     for file in files:
