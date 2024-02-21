@@ -9,8 +9,15 @@ import os
 class TsLabel():
     def __init__(self, filename) -> None:
         self.filename = filename
-        self.df = pd.read_csv('data/'+filename, parse_dates=True, index_col=0)
+        self.filename_ = filename.split('.')[0]
+        if '.csv' in filename:
+            self.filetype = 'csv'
+            self.df = pd.read_csv('data/'+filename, parse_dates=True, index_col=0)
+        elif '.xlsx' in filename:
+            self.filetype = 'xlsx'
+            self.df = pd.read_excel('data/'+filename, usecols=[0,1])
         self.df['label'] = 0
+        self.df.rename(columns={'Pressrure (Pa)': 'P'}, inplace=True)
 
     # 定义一个函数，用于根据用户的鼠标选择，给数据打上标签
     def label_data(self, start, end, label):
@@ -40,7 +47,7 @@ class TsLabel():
                 ax.add_patch(rect)
                 # 更新图像
                 plt.draw()
-        def on_right_click(self, event):
+        def on_right_click(event):
             # 判断是否是右键点击
             if event.button == 3:
                 # 获取鼠标当前位置的日期
@@ -85,7 +92,7 @@ class TsLabel():
         plt.show()
 
     def savecsv(self):
-        self.df.to_csv('data/' + self.filename)
+        self.df.to_csv('output/' + self.filename_ + '.csv')
 
 
 if __name__ == '__main__':
@@ -93,5 +100,6 @@ if __name__ == '__main__':
     for file in files:
         print(file)
         labeltask = TsLabel(file)
+        print(labeltask.df)
         labeltask.plot_data()
         labeltask.savecsv()
